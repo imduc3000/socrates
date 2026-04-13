@@ -41,12 +41,7 @@ jobs:
             -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             https://api.github.com/repos/${REPO}/pages \
-            | python3 - <<'PY'
-import json, sys
-data = json.load(sys.stdin)
-print(data.get("cname") or "")
-PY
-)
+            | python3 -c 'import json,sys; print((json.load(sys.stdin).get("cname") or "").strip())')
 
           if [ -n "$cname" ]; then
             echo "Custom domain is still configured as '$cname'."
