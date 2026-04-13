@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Nocturne philosophy palette for dark radial background */
+    --background: 252 18% 10%;
+    --foreground: 38 28% 88%;
+
+    --card: 252 16% 14%;
+    --card-foreground: 38 24% 88%;
+
+    --popover: 252 16% 14%;
+    --popover-foreground: 38 24% 88%;
+
+    --primary: 40 52% 58%;
+    --primary-foreground: 30 30% 14%;
+
+    --secondary: 252 12% 20%;
+    --secondary-foreground: 38 20% 84%;
+
+    --muted: 252 10% 18%;
+    --muted-foreground: 34 18% 68%;
+
+    --accent: 38 42% 46%;
+    --accent-foreground: 32 28% 14%;
+
+    --destructive: 0 55% 52%;
+    --destructive-foreground: 35 25% 92%;
+
+    --border: 252 10% 24%;
+    --input: 252 10% 22%;
+    --ring: 40 52% 58%;
+
+    --radius: 0.75rem;
+
+    --sage: 36 20% 54%;
+    --sage-light: 252 10% 26%;
+    --parchment: 252 18% 10%;
+    --parchment-dark: 252 14% 14%;
+    --stone: 34 14% 58%;
+    --gold: 40 58% 60%;
+    --gold-muted: 36 34% 52%;
+    --warm-shadow: 252 18% 5%;
+
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Crimson Text', serif;
+    --font-ui: 'Inter', sans-serif;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+    background-image: radial-gradient(ellipse at 50% 40%, #1e1a2e 0%, #0d0b14 60%, #080710 100%);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+  .font-body {
+    font-family: var(--font-body);
+  }
+  .font-ui {
+    font-family: var(--font-ui);
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 5s ease-in-out infinite;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
