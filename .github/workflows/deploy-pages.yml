@@ -20,12 +20,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Clear custom domain
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
         run: |
-          curl -s -X PATCH \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          set -euo pipefail
+          echo "Removing any configured custom domain from GitHub Pages..."
+
+          curl -sSf -X PATCH \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/${{ github.repository }}/pages \
-            -d '{"cname": null}' || true
+            https://api.github.com/repos/${REPO}/pages \
+            -d '{"cname": null}' \
+            > /tmp/pages_response.json
+
+          echo "Pages configuration after clearing domain:"
+          cat /tmp/pages_response.json
+
+          cname=$(curl -sSf \
+            -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${REPO}/pages \
+            | python3 - <<'PY'
+import json, sys
+data = json.load(sys.stdin)
+print(data.get("cname") or "")
+PY
+)
+
+          if [ -n "$cname" ]; then
+            echo "Custom domain is still configured as '$cname'."
+            exit 1
+          fi
+
+          echo "Custom domain cleared. Deployment will use the default GitHub Pages domain."
 
       - name: Checkout
         uses: actions/checkout@v4
