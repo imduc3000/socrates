@@ -34,6 +34,9 @@ jobs:
       - name: Build app
         run: npm run build
 
+      - name: Remove stale CNAME
+        run: rm -f dist/CNAME
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
