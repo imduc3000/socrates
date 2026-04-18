@@ -183,10 +183,11 @@ const InnerDictionary = ({ onBack, onViewMap, onStartSession }: InnerDictionaryP
 
   return (
     <div
-      className="fixed inset-0 overflow-y-auto overscroll-y-contain"
+      className="fixed inset-0 overflow-y-auto overflow-x-hidden overscroll-y-contain"
       style={{
         background:
           "radial-gradient(ellipse at 18% 12%, hsl(252 45% 14%) 0%, transparent 55%), radial-gradient(ellipse at 88% 86%, hsl(281 40% 16%) 0%, transparent 50%), radial-gradient(ellipse at 50% 45%, hsl(230 52% 8%) 0%, hsl(225 54% 4%) 100%)",
+        WebkitOverflowScrolling: "touch",
       }}
     >
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">

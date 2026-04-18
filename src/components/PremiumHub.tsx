@@ -125,10 +125,11 @@ const PremiumHub = ({
 
   return (
     <div
-      className="fixed inset-0 overflow-y-auto md:overflow-hidden overscroll-y-contain"
+      className="fixed inset-0 overflow-y-auto overflow-x-hidden overscroll-y-contain"
       style={{
         background:
           "radial-gradient(ellipse at 18% 12%, hsl(252 45% 14%) 0%, transparent 55%), radial-gradient(ellipse at 88% 86%, hsl(281 40% 16%) 0%, transparent 50%), radial-gradient(ellipse at 50% 45%, hsl(230 52% 8%) 0%, hsl(225 54% 4%) 100%)",
+        WebkitOverflowScrolling: "touch",
       }}
     >
       <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
@@ -172,8 +173,8 @@ const PremiumHub = ({
       </motion.header>
 
       <div
-        className="relative z-20 min-h-screen md:h-screen max-w-7xl mx-auto px-4 md:px-7 pt-[88px] md:pt-[90px] pb-3 md:pb-4 flex flex-col"
-        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+        className="relative z-20 min-h-dvh md:min-h-screen max-w-7xl mx-auto px-4 md:px-7 pt-[88px] md:pt-[90px] pb-3 md:pb-4 flex flex-col"
+        style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}
       >
         <motion.div
           className="text-center mb-4 md:mb-5"
@@ -192,14 +193,14 @@ const PremiumHub = ({
         </motion.div>
 
         <div className="flex-1 min-h-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4 md:h-full pb-2 md:pb-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4 md:h-full pb-3 md:pb-0">
           {features.map((feature, i) => {
             const Icon = feature.icon;
             return (
               <motion.button
                 key={i}
                 onClick={feature.onClick}
-                className="w-full h-[320px] sm:h-[360px] md:h-[420px] xl:h-[450px] rounded-[30px] border border-border/55 text-left transition-all group overflow-hidden"
+                className="w-full h-[336px] sm:h-[360px] md:h-[420px] xl:h-[450px] rounded-[30px] border border-border/55 text-left transition-all group overflow-hidden"
                 style={{ background: feature.accent, willChange: "transform, opacity" }}
                 initial={{ opacity: 0, y: 12, scale: 0.99 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -221,7 +222,7 @@ const PremiumHub = ({
                       <p className="font-body text-sm md:text-[15px] text-foreground/75 leading-relaxed line-clamp-3">{feature.description}</p>
                     </div>
 
-                    <div className="flex items-center justify-between mt-auto pt-2">
+                    <div className="flex items-center justify-between gap-2 mt-auto pt-2">
                       <span className="font-ui text-[11px] text-muted-foreground tracking-wide">Tap để mở</span>
                       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/16 border border-gold/30 text-gold font-ui text-[11px] tracking-wide">
                         Khám phá
