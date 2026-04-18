@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Shield } from "lucide-react";
 import socratesBust from "@/assets/socrates-bust.png";
 
 interface WelcomeScreenProps {
@@ -109,42 +108,19 @@ const WelcomeScreen = ({ onStart }: WelcomeScreenProps) => {
         transition={{ duration: 0.8, delay: 1.3 }}
       />
 
-      {/* Philosophy quote — single line */}
-      <motion.p
-        className="font-body text-sm text-muted-foreground mt-6 text-center italic relative z-10 whitespace-nowrap"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.6 }}
-      >
-        "Cuộc sống không được suy xét thì không đáng sống." — Socrates
-      </motion.p>
-
       {/* CTA Button with glow */}
       <motion.button
         onClick={onStart}
-        className="mt-12 px-10 py-4 rounded-full bg-primary text-primary-foreground font-ui text-sm tracking-wider uppercase transition-all relative z-10 hover:shadow-lg"
+        className="mt-12 px-10 py-4 rounded-full bg-primary text-primary-foreground font-ui text-sm tracking-wider uppercase relative z-10 transform-gpu will-change-transform transition-[transform,box-shadow,filter] duration-300 ease-out hover:scale-[1.03] hover:shadow-lg active:scale-[0.985]"
         style={{
           boxShadow: "0 0 12px hsl(40 48% 46% / 0.12), 0 4px 16px hsl(26 28% 18% / 0.2)",
         }}
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 2 }}
-        whileHover={{ scale: 1.05, boxShadow: "0 0 18px hsl(40 48% 46% / 0.16), 0 8px 22px hsl(26 28% 18% / 0.24)" }}
-        whileTap={{ scale: 0.97 }}
       >
         Bắt đầu tâm sự
       </motion.button>
-
-      {/* Privacy note */}
-      <motion.p
-        className="mt-5 font-ui text-xs text-muted-foreground/50 flex items-center gap-1.5 relative z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 2.4 }}
-      >
-        <Shield size={12} />
-        Hoàn toàn riêng tư · Không lưu trữ · Mã nguồn mở
-      </motion.p>
 
       {/* Bottom decorative line */}
       <motion.div

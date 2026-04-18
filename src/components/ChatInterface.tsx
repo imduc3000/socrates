@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { BookOpen, Sparkles } from "lucide-react";
 import socratesBust from "@/assets/socrates-bust.png";
-import SpotlightTutorial, { type SpotlightStep } from "./SpotlightTutorial";
 
 interface Message {
   id: number;
@@ -21,25 +20,6 @@ const socratesResponses = [
   "Nếu một người bạn thân kể cho bạn câu chuyện này, bạn sẽ hỏi họ điều gì?",
 ];
 
-const chatTutorialSteps: SpotlightStep[] = [
-  {
-    id: "intro",
-    label: "Cách trò chuyện",
-    message: "Đây là không gian riêng tư của bạn. Hãy chia sẻ bất cứ điều gì — Socrates sẽ lắng nghe và đặt những câu hỏi phản tư giúp bạn hiểu rõ hơn chính mình.",
-    targetSelector: "[data-tutorial='socrates-question']",
-    position: "bottom",
-    delay: 4500,
-  },
-  {
-    id: "summarize-hint",
-    label: "Khi đã sẵn sàng",
-    message: "Nhấn \"Đúc kết\" để Socrates phân tích cuộc trò chuyện.",
-    targetSelector: "[data-tutorial='summarize-btn']",
-    position: "bottom",
-    delay: 600,
-  },
-];
-
 interface ChatInterfaceProps {
   onSummarize: () => void;
   onPremium: () => void;
@@ -47,16 +27,16 @@ interface ChatInterfaceProps {
 
 type Phase = "greeting" | "idle-waiting" | "user-typing" | "transitioning" | "socrates-speaking";
 
+const INITIAL_PROMPT_DELAY_MS = 800;
+const INITIAL_SPEAKING_DURATION_MS = 2000;
+const FOLLOW_UP_SPEAKING_DURATION_MS = 1800;
+
 const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [liveText, setLiveText] = useState("");
   const [phase, setPhase] = useState<Phase>("greeting");
   const [socratesQuestion, setSocratesQuestion] = useState("");
   const [fadedMessages, setFadedMessages] = useState<Message[]>([]);
-  const [showTutorial, setShowTutorial] = useState(true);
-  const [summarizeTutorialShown, setSummarizeTutorialShown] = useState(false);
-  const [tutorialSteps, setTutorialSteps] = useState<SpotlightStep[]>([chatTutorialSteps[0]]);
-  const [exchangeCount, setExchangeCount] = useState(0);
   const responseIndex = useRef(0);
   const hiddenInputRef = useRef<HTMLInputElement>(null);
 
@@ -68,26 +48,12 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const greeting = "Chào bạn. Tôi là Socrates.\nTôi không ở đây để khuyên bạn điều gì —\ntôi chỉ muốn lắng nghe và cùng bạn suy ngẫm.\n\nHãy kể cho tôi, hôm nay bạn cảm thấy thế nào?";
+      const greeting = "Hãy kể cho tôi, hôm nay bạn cảm thấy thế nào?";
       setSocratesQuestion(greeting);
       setPhase("socrates-speaking");
-      setTimeout(() => setPhase("idle-waiting"), 3500);
-    }, 800);
+      setTimeout(() => setPhase("idle-waiting"), INITIAL_SPEAKING_DURATION_MS);
+    }, INITIAL_PROMPT_DELAY_MS);
     return () => clearTimeout(timer);
-  }, []);
-
-  // Show summarize tutorial after 3 exchanges
-  useEffect(() => {
-    if (exchangeCount >= 3 && !summarizeTutorialShown) {
-      setSummarizeTutorialShown(true);
-      setTutorialSteps([chatTutorialSteps[1]]);
-      setShowTutorial(true);
-    }
-  }, [exchangeCount, summarizeTutorialShown]);
-
-  const handleTutorialComplete = useCallback(() => {
-    setShowTutorial(false);
-    setTimeout(() => hiddenInputRef.current?.focus(), 100);
   }, []);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -108,8 +74,7 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
         setSocratesQuestion(response);
         setFadedMessages((prev) => [...prev, socratesMsg]);
         setPhase("socrates-speaking");
-        setExchangeCount((prev) => prev + 1);
-        setTimeout(() => setPhase("idle-waiting"), 3000);
+        setTimeout(() => setPhase("idle-waiting"), FOLLOW_UP_SPEAKING_DURATION_MS);
       }, 1500);
     }
   }, [phase, liveText]);
@@ -127,10 +92,52 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
 
   const showCursor = phase === "idle-waiting" || phase === "user-typing";
 
+  const renderTypewriterText = () => {
+    if (!liveText) return null;
+
+    const parts = liveText.match(/\S+|\s+/g) ?? [];
+    const words = parts.filter((part) => !/^\s+$/.test(part));
+    const totalWords = words.length;
+    const hasActiveWord = !/\s$/.test(liveText);
+    const dimOpacity = 0.48;
+    const dimBlur = 0.55;
+    let wordIndex = 0;
+
+    return parts.map((part, index) => {
+      if (/^\s+$/.test(part)) {
+        return <span key={`space-${index}`}>{part}</span>;
+      }
+
+      wordIndex += 1;
+      const isActiveWord = hasActiveWord && wordIndex === totalWords;
+      const opacity = isActiveWord ? 1 : dimOpacity;
+      const blur = isActiveWord ? 0 : dimBlur;
+
+      return (
+        <span
+          key={`word-${index}`}
+          className="transition-all duration-200 ease-out"
+          style={{ opacity, filter: `blur(${blur}px)` }}
+        >
+          {part}
+        </span>
+      );
+    });
+  };
+
   return (
-    <div className="min-h-screen flex flex-col bg-background/90 relative overflow-hidden cursor-text" onClick={handleScreenClick}>
+    <div
+      className="min-h-screen flex flex-col relative overflow-hidden cursor-text"
+      style={{
+        background:
+          "radial-gradient(ellipse at 18% 12%, hsl(252 45% 14%) 0%, transparent 55%), radial-gradient(ellipse at 88% 86%, hsl(281 40% 16%) 0%, transparent 50%), radial-gradient(ellipse at 50% 45%, hsl(230 52% 8%) 0%, hsl(225 54% 4%) 100%)",
+      }}
+      onClick={handleScreenClick}
+    >
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full bg-gold/3 blur-[120px] animate-breathe" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full bg-gold/6 blur-[120px] animate-breathe" />
+        <div className="absolute left-[8%] top-[22%] h-56 w-56 rounded-full bg-gold/10 blur-[95px]" />
+        <div className="absolute right-[12%] bottom-[18%] h-72 w-72 rounded-full bg-violet-500/12 blur-[120px]" />
       </div>
 
       <input
@@ -142,8 +149,6 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
         style={{ position: "fixed", top: -100 }}
         autoFocus
       />
-
-      <SpotlightTutorial steps={tutorialSteps} active={showTutorial} onComplete={handleTutorialComplete} />
 
       {/* Top bar */}
       <motion.header
@@ -169,7 +174,7 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
         <div className="flex items-center gap-2">
           <motion.button
             onClick={(e) => { e.stopPropagation(); onPremium(); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-gold-muted/30 text-gold font-ui text-sm hover:border-gold-muted hover:bg-card transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-gold/30 text-gold font-ui text-sm hover:border-gold/50 hover:bg-black/35 transition-colors"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -177,9 +182,8 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
             Premium
           </motion.button>
           <motion.button
-            data-tutorial="summarize-btn"
             onClick={(e) => { e.stopPropagation(); onSummarize(); }}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-card/50 border border-border/40 text-muted-foreground font-ui text-sm hover:border-gold-muted hover:text-foreground transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-black/20 border border-border/40 text-muted-foreground font-ui text-sm hover:border-gold/35 hover:text-foreground hover:bg-black/35 transition-colors"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -205,15 +209,26 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
           {(phase === "socrates-speaking" || phase === "idle-waiting" || phase === "user-typing") && socratesQuestion && (
             <motion.div
               key="socrates-q"
-              data-tutorial="socrates-question"
-              className="flex flex-col items-center text-center max-w-lg px-4 mb-8"
+              layout
+              className="flex flex-col items-center text-center max-w-2xl px-4 md:px-6 mb-8"
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: phase === "user-typing" ? 0.4 : 1, y: phase === "user-typing" ? -20 : 0, scale: phase === "user-typing" ? 0.95 : 1 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+              animate={{ opacity: phase === "user-typing" ? 0.55 : 1, y: phase === "user-typing" ? -8 : 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ type: "spring", stiffness: 120, damping: 20, mass: 0.85 }}
             >
               <motion.span className="font-display text-xs text-gold-muted/60 tracking-[0.2em] uppercase mb-4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>Socrates</motion.span>
-              <p className="font-body text-xl md:text-2xl leading-relaxed whitespace-pre-line italic text-foreground">{socratesQuestion}</p>
+              <AnimatePresence mode="wait">
+                <motion.p
+                  key={socratesQuestion}
+                  className="font-body text-xl md:text-2xl leading-relaxed whitespace-pre-line italic text-foreground"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.46, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {socratesQuestion}
+                </motion.p>
+              </AnimatePresence>
               <motion.div className="w-12 h-px bg-gold-muted/30 mt-6" initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.4, duration: 0.6 }} />
             </motion.div>
           )}
@@ -222,7 +237,7 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
         {showCursor && (
           <motion.div className="max-w-lg w-full px-4 text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
             <p className="font-body text-xl md:text-2xl leading-relaxed text-foreground min-h-[2em] inline">
-              {liveText}
+              {renderTypewriterText()}
               <motion.span className="inline-block w-[2px] h-[1.2em] bg-gold ml-0.5 align-text-bottom" animate={{ opacity: [1, 0] }} transition={{ duration: 0.8, repeat: Infinity, repeatType: "reverse" }} />
             </p>
             {phase === "idle-waiting" && !liveText && (
@@ -243,7 +258,7 @@ const ChatInterface = ({ onSummarize, onPremium }: ChatInterfaceProps) => {
       </div>
 
       <motion.div className="relative z-10 px-6 pb-6 pt-2">
-        <motion.p className="text-center font-ui text-[11px] text-muted-foreground/30 tracking-wide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
+        <motion.p className="text-center font-ui text-[11px] text-muted-foreground/45 tracking-wide" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
           Nhấn Enter để gửi · Nhấn "Đúc kết" khi bạn muốn dừng lại
         </motion.p>
       </motion.div>

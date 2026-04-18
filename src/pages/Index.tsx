@@ -12,7 +12,6 @@ type Screen = "welcome" | "chat" | "summary" | "premium" | "emotion-chart" | "in
 
 const Index = () => {
   const [screen, setScreen] = useState<Screen>("welcome");
-  const [premiumFeatureIndex, setPremiumFeatureIndex] = useState(0);
 
   return (
     <AnimatePresence mode="wait">
@@ -43,8 +42,6 @@ const Index = () => {
             onViewChart={() => setScreen("emotion-chart")}
             onViewDictionary={() => setScreen("inner-dictionary")}
             onViewMap={() => setScreen("character-map")}
-            nextFeatureIndex={premiumFeatureIndex}
-            onFeatureIntroduced={() => setPremiumFeatureIndex((p) => p + 1)}
           />
         )}
         {screen === "emotion-chart" && <EmotionChart onBack={() => setScreen("premium")} />}
