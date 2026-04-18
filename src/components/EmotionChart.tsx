@@ -99,7 +99,7 @@ const EmotionChart = ({ onBack }: EmotionChartProps) => {
 
   return (
     <div
-      className="fixed inset-0 overflow-hidden"
+      className="fixed inset-0 overflow-y-auto overscroll-y-contain"
       style={{
         background:
           "radial-gradient(ellipse at 18% 12%, hsl(252 45% 14%) 0%, transparent 55%), radial-gradient(ellipse at 88% 86%, hsl(281 40% 16%) 0%, transparent 50%), radial-gradient(ellipse at 50% 45%, hsl(230 52% 8%) 0%, hsl(225 54% 4%) 100%)",
@@ -131,6 +131,7 @@ const EmotionChart = ({ onBack }: EmotionChartProps) => {
 
       <motion.header
         className="absolute top-0 left-0 right-0 z-30 flex items-center px-4 md:px-8 pt-5 md:pt-6"
+        style={{ paddingTop: "max(1.25rem, env(safe-area-inset-top))" }}
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
       >
@@ -154,7 +155,10 @@ const EmotionChart = ({ onBack }: EmotionChartProps) => {
         </div>
       </motion.header>
 
-      <div className="relative z-20 h-screen pt-[84px] md:pt-[92px] pb-3 md:pb-4 flex flex-col">
+      <div
+        className="relative z-20 min-h-screen pt-[88px] md:pt-[92px] pb-4 md:pb-5 flex flex-col"
+        style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+      >
         <motion.div className="px-4 md:px-8" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <p className="font-ui text-[10px] tracking-[0.3em] uppercase text-gold/80">Orbital timeline</p>
           <h1 className="font-display text-xl md:text-2xl text-foreground leading-tight mt-1">Quỹ đạo cảm xúc</h1>
@@ -297,12 +301,12 @@ const EmotionChart = ({ onBack }: EmotionChartProps) => {
           </div>
         </motion.div>
 
-        <div className="px-4 md:px-8 mt-2 flex-1 min-h-0">
+        <div className="px-4 md:px-8 mt-3 pb-3">
           <AnimatePresence mode="wait">
             {selected ? (
               <motion.div
                 key={selected.date}
-                className="max-w-6xl mx-auto rounded-[22px] border border-gold/20 p-4 md:p-5 backdrop-blur-2xl h-full overflow-y-auto"
+                className="max-w-6xl w-full mx-auto rounded-[22px] border border-gold/20 p-4 md:p-5 backdrop-blur-2xl"
                 initial={{ opacity: 0, y: 14, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.98 }}

@@ -183,7 +183,7 @@ const InnerDictionary = ({ onBack, onViewMap, onStartSession }: InnerDictionaryP
 
   return (
     <div
-      className="fixed inset-0 overflow-y-auto md:overflow-hidden overscroll-y-contain"
+      className="fixed inset-0 overflow-y-auto overscroll-y-contain"
       style={{
         background:
           "radial-gradient(ellipse at 18% 12%, hsl(252 45% 14%) 0%, transparent 55%), radial-gradient(ellipse at 88% 86%, hsl(281 40% 16%) 0%, transparent 50%), radial-gradient(ellipse at 50% 45%, hsl(230 52% 8%) 0%, hsl(225 54% 4%) 100%)",
@@ -250,7 +250,7 @@ const InnerDictionary = ({ onBack, onViewMap, onStartSession }: InnerDictionaryP
       </motion.header>
 
       <div
-        className="relative z-20 min-h-screen md:h-screen flex flex-col pt-[86px] md:pt-[88px] pb-3 md:pb-4"
+        className="relative z-20 min-h-screen flex flex-col pt-[86px] md:pt-[88px] pb-4 md:pb-5"
         style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
       >
         <motion.div
@@ -353,12 +353,12 @@ const InnerDictionary = ({ onBack, onViewMap, onStartSession }: InnerDictionaryP
           </div>
         </div>
 
-        <div className="mt-3 px-4 md:px-8 flex-1 md:min-h-0 pb-2">
+        <div className="mt-3 px-4 md:px-8 pb-3 md:pb-4">
           <AnimatePresence mode="wait">
             {selectedCharacter ? (
               <motion.div
                 key={selectedCharacter.id}
-                className="max-w-6xl mx-auto rounded-[26px] border border-gold/20 p-3.5 md:p-4 backdrop-blur-2xl md:max-h-[24vh]"
+                className="max-w-6xl w-full mx-auto rounded-[26px] border border-gold/20 p-3.5 md:p-4 backdrop-blur-2xl"
                 initial={{ opacity: 0, y: 26, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -385,19 +385,19 @@ const InnerDictionary = ({ onBack, onViewMap, onStartSession }: InnerDictionaryP
                 <div className="grid gap-3 md:gap-4 md:grid-cols-[1.2fr_1fr]">
                   <div>
                     <h3 className="font-display text-xl md:text-2xl text-foreground mt-0.5">{selectedCharacter.name}</h3>
-                    <p className="font-body text-sm md:text-base text-foreground/80 mt-1 leading-relaxed line-clamp-2">
+                    <p className="font-body text-sm md:text-base text-foreground/80 mt-1 leading-relaxed">
                       {selectedCharacter.description}
                     </p>
 
                     <div className="mt-2 rounded-2xl border border-border/60 bg-black/20 p-2.5 md:p-3">
-                      <p className="font-body text-sm md:text-base text-foreground/90 italic leading-relaxed line-clamp-2">"{selectedCharacter.quote}"</p>
+                      <p className="font-body text-sm md:text-base text-foreground/90 italic leading-relaxed">"{selectedCharacter.quote}"</p>
                     </div>
                   </div>
 
                   <div>
                     <div className="rounded-2xl border border-border/60 bg-black/20 p-2.5 md:p-3">
                       <p className="font-ui text-[10px] tracking-[0.22em] uppercase text-gold/75 mb-1.5">Socrates nhận ra</p>
-                      <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed italic line-clamp-3">
+                      <p className="font-body text-sm md:text-base text-foreground/90 leading-relaxed italic">
                         {selectedCharacter.socratesNote}
                       </p>
                       <p className="font-ui text-[10px] md:text-[11px] text-muted-foreground mt-2">
