@@ -200,7 +200,7 @@ const PremiumHub = ({
               <motion.button
                 key={i}
                 onClick={feature.onClick}
-                className="w-full min-h-[392px] sm:min-h-[408px] md:min-h-0 md:h-[420px] xl:h-[450px] rounded-[30px] border border-border/55 text-left transition-all group overflow-hidden"
+                className="w-full min-h-[352px] sm:min-h-[372px] md:min-h-0 md:h-[420px] xl:h-[450px] rounded-[30px] border border-border/55 text-left transition-all group overflow-hidden"
                 style={{ background: feature.accent, willChange: "transform, opacity" }}
                 initial={{ opacity: 0, y: 12, scale: 0.99 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -208,21 +208,21 @@ const PremiumHub = ({
                 whileHover={{ scale: 1.01, y: -2 }}
               >
                 <div className="h-full flex flex-col">
-                  <div className="h-[172px] sm:h-[188px] md:h-[54%] p-3.5 pb-2.5 md:p-4 md:pb-3">
+                  <div className="h-[148px] sm:h-[164px] md:h-[54%] p-3.5 pb-2 md:p-4 md:pb-3">
                     <FeaturePreview type={feature.preview} />
                   </div>
 
-                  <div className="flex-1 px-3.5 pb-3.5 md:px-4 md:pb-4 flex flex-col">
+                  <div className="flex-1 px-3.5 pb-3 md:px-4 md:pb-4 flex flex-col">
                     <div className="min-w-0">
-                      <p className="font-ui text-[10px] tracking-[0.22em] uppercase text-gold/75 mb-1.5">Premium Insight</p>
-                      <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold-muted/20 flex items-center justify-center shrink-0 group-hover:bg-gold/20 transition-colors mb-2">
+                      <p className="font-ui text-[10px] tracking-[0.22em] uppercase text-gold/75 mb-1">Premium Insight</p>
+                      <div className="w-8 h-8 rounded-lg bg-gold/10 border border-gold-muted/20 flex items-center justify-center shrink-0 group-hover:bg-gold/20 transition-colors mb-1.5">
                         <Icon size={17} className="text-gold" />
                       </div>
-                      <h3 className="font-display text-[1.25rem] md:text-[1.4rem] text-foreground mb-1 leading-tight">{feature.title}</h3>
+                      <h3 className="font-display text-[1.18rem] md:text-[1.4rem] text-foreground mb-1 leading-tight">{feature.title}</h3>
                       <p className="font-body text-sm md:text-[15px] text-foreground/75 leading-relaxed line-clamp-2 md:line-clamp-3">{feature.description}</p>
                     </div>
 
-                    <div className="grid grid-cols-[1fr_auto] items-center gap-2 mt-3 md:mt-auto pt-2">
+                    <div className="grid grid-cols-[1fr_auto] items-center gap-2 mt-2 md:mt-auto pt-1.5 md:pt-2">
                       <span className="font-ui text-[11px] text-muted-foreground tracking-wide truncate">Tap để mở</span>
                       <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gold/16 border border-gold/30 text-gold font-ui text-[11px] tracking-wide whitespace-nowrap shrink-0">
                         Khám phá
